@@ -4,7 +4,7 @@ import {
   Text,
   View
 } from 'react-native';
-import { useNavigation } from '@react-navigation/core';
+import { useNavigation, useRoute } from '@react-navigation/core';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { Button } from '../components/Button';
@@ -12,11 +12,33 @@ import { Button } from '../components/Button';
 import colors from '../styles/colors';
 import fonts from '../styles/fonts';
 
+interface Params {
+  title: string;
+  subtitle: string;
+  buttonTitle: string;
+  icon: 'smileStar' | 'plant';
+  nextScreen: string;
+}
+
+const emojis = {
+  smileStar: '🤩',
+  plant: '🌱'
+}
+
 export function Confirmation(){
   const navigation = useNavigation();
+  const route = useRoute();
+
+  const {
+    title,
+    subtitle,
+    buttonTitle,
+    icon,
+    nextScreen
+  } = route.params as Params;
 
   function handleMoveOn(){
-    navigation.navigate('PlantSelect')
+    navigation.navigate(nextScreen)
   }
 
   return(
@@ -25,20 +47,20 @@ export function Confirmation(){
       <View style={styles.content}>
 
         <Text style={styles.emoji} >
-          🤩
+          {emojis[icon]}
         </Text>
 
         <Text style={styles.title}>
-          Prontinho!
+          {title}
         </Text>
 
         <Text style={styles.subtitle}>
-          Bora cuidar dessas platinha aí!!!
+          {subtitle}
         </Text>
 
         <View style={styles.footer}>
           <Button
-            title='Começar'
+            title={buttonTitle}
             onPress={handleMoveOn}
           />
         </View>

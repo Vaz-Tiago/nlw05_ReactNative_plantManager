@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import AsyncStorage from '@react-native-async-storage/async-storage'
 import { 
   StyleSheet,
   View,
@@ -8,7 +9,8 @@ import {
   KeyboardAvoidingView,
   TouchableWithoutFeedback,
   Platform,
-  Keyboard
+  Keyboard,
+  Alert
 } from 'react-native';
 
 
@@ -25,8 +27,23 @@ export function UserIdentification(){
   const [isFilled, setIsFilled] = useState(false);
   const [name, setName] = useState<string>();
 
-  function handleConfirmation(){
-    navigation.navigate('Confirmation');
+  async function handleConfirmation(){
+    if(!name)
+      return Alert.alert(`Me diga o seu nome 😥`);
+
+    try {
+      await AsyncStorage.setItem('@plantManager:user', name);
+      navigation.navigate('Confirmation', {
+        title: 'Prontinho!!!',
+        subtitle: `Bora cuidar dessas plantinhas ${name}!!!`,
+        buttonTitle: 'Começar',
+        icon: 'smileStar',
+        nextScreen: 'PlantSelect'
+      });
+
+    }catch{
+      Alert.alert('Não foi possível salvar o seu nome 😭')
+    }
   }
 
   function handleInputFocus(){
